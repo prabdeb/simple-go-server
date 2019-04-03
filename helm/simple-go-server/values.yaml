@@ -1,0 +1,39 @@
+# Default values for simple-go-server.
+
+replicaCount: 1
+
+image:
+  repository: prabdeb/simple-go-server
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+
+ingress:
+  enabled: false
+  annotations: {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  path: /
+  hosts:
+    - simple-go-server.domain.local
+  tls: []
+  #  - secretName: simple-go-server-tls
+  #    hosts:
+  #      - simple-go-server.domain.local
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}

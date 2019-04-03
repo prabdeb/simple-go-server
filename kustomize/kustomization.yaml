@@ -1,0 +1,19 @@
+# Labels to add to all resources and selectors.
+commonLabels:
+  app: simple-go-server
+
+# Images modify the tags for images without
+# creating patches.
+images:
+- name: prabdeb/simple-go-server
+  newTag: latest
+
+# Value of this field is prepended to the
+# names of all resources
+namePrefix: simple-go-server
+
+# List of resource files that kustomize reads, modifies
+# and emits as a YAML string
+resources:
+- simple-go-server-deploy.yaml
+- simple-go-server-svc.yaml

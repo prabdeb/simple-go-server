@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: simple-go-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simple-go-server
+  template:
+    metadata:
+      labels:
+        app: simple-go-server
+    spec:
+      containers:
+      - image: prabdeb/simple-go-server:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        name: simple-go-server
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: http
+        resources:
+          limits:
+            cpu: 100m
+            memory: 128Mi
+          requests:
+            cpu: 100m
+            memory: 128Mi
