@@ -41,6 +41,16 @@ func setupRouter() *gin.Engine {
 		c.String(http.StatusOK, "pong")
 	})
 
+	// Test Azure Storage
+	r.GET("/azure-storage", func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		testLog, err := storageTest()
+		if err != nil {
+			c.String(http.StatusInternalServerError, testLog)
+		}
+		c.String(http.StatusOK, testLog)
+	})
+
 	return r
 }
 

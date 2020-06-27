@@ -1,0 +1,4 @@
+{
+    "azureStorageAccount"       : "<Azure Storage Account Name>",
+	"azureStorageAccessKey"     : "<Azure Storage Account Access Key>"
+}

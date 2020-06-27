@@ -2,10 +2,27 @@
 
 replicaCount: 1
 
+features:
+  enableAzureStorage: false
+
 image:
   repository: prabdeb/simple-go-server
   tag: latest
   pullPolicy: IfNotPresent
+
+#env:
+  #AZURE_KEYVAULT_SECRET_FILE: "/kvmnt/simple-go-server-property-json" # Needed only if enableAzureStorage is enabled
+
+# Needed only if enableAzureStorage is enabled
+secretStore:
+  csi:
+    volumeAttributes:
+      keyvaultName: ""
+      tenantId: ""
+      objects:
+        simple-go-server-property-json: secret
+    nodePublishSecretRef:
+      name: secrets-store-creds
 
 service:
   type: ClusterIP

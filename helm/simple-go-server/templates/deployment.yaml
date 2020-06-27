@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: {{ template "simple-go-server.fullname" . }}
   labels:
+    app.kubernetes.io/name: {{ template "simple-go-server.name" . }}
     app: {{ template "simple-go-server.name" . }}
     chart: {{ template "simple-go-server.chart" . }}
     release: {{ .Release.Name }}
@@ -23,6 +24,19 @@ spec:
         - name: {{ .Chart.Name }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- if .Values.features.enableAzureStorage }}
+          volumeMounts:
+            - name: azure-key-vault
+              mountPath: /kvmnt
+              readOnly: true
+          {{- end }}
+          {{- if .Values.env }}
+          env:
+          {{- range $key, $value := .Values.env }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+          {{- end }}
+          {{- end }}
           ports:
             - name: http
               containerPort: 8080
@@ -37,6 +51,27 @@ spec:
               port: http
           resources:
 {{ toYaml .Values.resources | indent 12 }}
+      {{- if .Values.features.enableAzureStorage }}
+      volumes:
+        - name: azure-key-vault
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              providerName: "azure"
+              usePodIdentity: "false"
+              keyvaultName: {{ .Values.secretStore.csi.volumeAttributes.keyvaultName }}
+              tenantId: {{ .Values.secretStore.csi.volumeAttributes.tenantId }}
+              objects:  |
+                array:
+                {{- range $objectName, $objectType := .Values.secretStore.csi.volumeAttributes.objects }}
+                  - |
+                    objectName: {{ $objectName }}
+                    objectType: {{ $objectType }}
+                {{- end }}
+            nodePublishSecretRef:
+              name: {{ .Values.secretStore.csi.nodePublishSecretRef.name }}
+      {{- end }}
     {{- with .Values.nodeSelector }}
       nodeSelector:
 {{ toYaml . | indent 8 }}
