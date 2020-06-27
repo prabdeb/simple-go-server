@@ -1,7 +1,8 @@
 FROM golang:latest AS builder
 WORKDIR /go/src/build
 ENV GOPATH /go
-COPY . .
+COPY main.go main.go
+COPY azure-storage.go azure-storage.go
 RUN go get ./...
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o simpleServer .
 
