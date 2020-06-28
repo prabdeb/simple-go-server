@@ -13,6 +13,7 @@ spec:
   selector:
     matchLabels:
       app: {{ template "simple-go-server.name" . }}
+      app.kubernetes.io/name: {{ template "simple-go-server.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
