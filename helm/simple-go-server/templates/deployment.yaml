@@ -3,7 +3,6 @@ kind: Deployment
 metadata:
   name: {{ template "simple-go-server.fullname" . }}
   labels:
-    app.kubernetes.io/name: {{ template "simple-go-server.name" . }}
     app: {{ template "simple-go-server.name" . }}
     chart: {{ template "simple-go-server.chart" . }}
     release: {{ .Release.Name }}
@@ -13,12 +12,12 @@ spec:
   selector:
     matchLabels:
       app: {{ template "simple-go-server.name" . }}
-      app.kubernetes.io/name: {{ template "simple-go-server.name" . }}
       release: {{ .Release.Name }}
   template:
     metadata:
       labels:
         app: {{ template "simple-go-server.name" . }}
+        app.kubernetes.io/name: {{ template "simple-go-server.name" . }}
         release: {{ .Release.Name }}
     spec:
       containers:
